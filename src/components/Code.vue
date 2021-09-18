@@ -3,7 +3,7 @@
         id="code-editor"
         v-model="m_code"
         @input="updateCode(m_code)"
-        @click="focus"
+        @click="$emit('focus')"
         :highlight="highlighter"
         language="js"
         emit-events="true"
@@ -34,12 +34,17 @@ export default {
       'code'
   ],
   emits: [
-      'update:code'
+      'update:code',
+      'focus'
   ],
   watch: {
       'code': function(newCode) {
           this.m_code = newCode;
-      } 
+      },
+
+      'm_code': function(newCode) {
+          this.updateCode(newCode);
+      }
   },
   methods: {
       updateCode(code) {
@@ -52,11 +57,7 @@ export default {
 
       highlighter(code) {
           return highlight(code, languages.js);
-      },
-
-      focus() {
-          document.getElementById('code-editor').children[1].children[0].focus();
-      },
+      }
   }
 }
 </script>

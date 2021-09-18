@@ -12,17 +12,21 @@ export default {
   data() {
     return {
       instance: null,
+      width: 0,
+      height: 0
     }
   },
   props: [
     'object',
     'objX',
     'objY',
+    'stageWidth'
   ],
   emits: [
     'update:object',
     'update:objX',
-    'update:objY'
+    'update:objY',
+    'reset'
   ],
   mounted() {
 
@@ -33,8 +37,8 @@ export default {
      */
     const sketch = (s) => {
 
-        s.setup = () => {
-            
+        s.setup = () => {           
+
             s.createCanvas();
 
             resizeCanvas(s);
@@ -51,8 +55,8 @@ export default {
               ref.$emit('update:objX', ref.objX + dx);
             }
 
-            object.addY = function(dx) {
-              ref.$emit('update:objX', ref.objX + dx);
+            object.addY = function(dy) {
+              ref.$emit('update:objY', ref.objY + dy);
             }
 
             object.addVelX = function(dvx) {
@@ -70,7 +74,8 @@ export default {
               this.accY = 0;
             }
             
-            ref.$emit('update:object', object);
+            this.$emit('update:object', object);
+            this.$emit('reset');
         }
 
         s.draw = () => {
@@ -78,8 +83,8 @@ export default {
             s.clear();
             s.background('#08B2CC');
 
-            s.circle(this.objX, this.objY, 20);
-            s.strokeWeight(2);
+            s.circle(this.objX * this.width / this.stageWidth, this.height - (this.objY * this.width / this.stageWidth), 2 * this.width / this.stageWidth);
+            s.strokeWeight(0.2 * this.width / this.stageWidth);
             s.fill('#3612CC');
             s.stroke('#1d1d1d')
         }
@@ -89,14 +94,14 @@ export default {
         }
     }
 
+    const resizeCanvas = (s) => {
+      this.width = document.getElementById('p5content').offsetWidth - 8;
+      this.height = document.getElementById('p5content').offsetHeight - 8;
+      s.resizeCanvas(this.width, this.height)
+    }
+
     this.instance = new p5(sketch);
   }
-}
-
-function resizeCanvas(s) {
-    const width = document.getElementById('p5content').offsetWidth - 8;
-    const height = document.getElementById('p5content').offsetHeight - 8;
-    s.resizeCanvas(width, height)
 }
 </script>
 

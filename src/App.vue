@@ -1,16 +1,32 @@
 <template>
   <div id="container">
-    <Content v-model:object="object" v-model:objX="objX" v-model:objY="objY" />
+
+    <Content
+      v-model:object="object"
+      v-model:objX="objX"
+      v-model:objY="objY"
+      :stageWidth="stageWidth"
+      @reset="reset" />
+
     <div id="code-section">
-      <Buttons @runCode="runCode" @clearCode="clearCode" @reset="reset" />
-      <Code v-model:code="code" />
+
+      <Control
+        @runCode="runCode"
+        @clearCode="clearCode"
+        @reset="reset"
+        @focus="focusEditor" />
+
+      <Code
+        v-model:code="code"
+        @focus="focusEditor" />
+
     </div>
   </div>
 </template>
 
 <script>
 import Content from './components/Content.vue'
-import Buttons from './components/Buttons.vue'
+import Control from './components/Control.vue'
 import Code from './components/Code.vue'
 
 export default {
@@ -19,15 +35,18 @@ export default {
     return {
       code: '',
       object: {},
+      startX: 3,
+      startY: 1,
       objX: 0,
       objY: 0,
+      stageWidth: 50, // in meters
       interval: null,
       timeout: null,
     }
   },
   components: {
     Content,
-    Buttons,
+    Control,
     Code
   },
   methods: {
@@ -67,15 +86,21 @@ export default {
     },
 
     clearCode() {
-      // console.log('clear code!');
       clearInterval(this.interval);
       this.code = '';
+      // console.log('clear code!');
     },
 
     reset() {
       this.object.reset();
-      this.objX = 0;
-      this.objY = 0;
+      this.objX = this.startX;
+      this.objY = this.startY;
+      // console.log('resetting!')
+    },
+
+    focusEditor() {
+      document.getElementById('code-editor').children[1].children[0].focus();
+      // console.log('focusing!')
     }
   }
 }

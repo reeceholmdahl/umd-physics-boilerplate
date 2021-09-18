@@ -21,6 +21,7 @@ export default {
             if (!this.running) {
                 this.$emit('reset');
                 this.$emit('runCode');
+                this.$emit('focus');
                 clearTimeout(this.runCodeBtnTimer);
                 this.running = true;
                 this.runCodeBtnTimer = setTimeout(() => { this.running = false; }, 3600);
@@ -30,6 +31,7 @@ export default {
         clearCode() {
             this.$emit('reset');
             this.$emit('clearCode');
+            this.$emit('focus');
             clearTimeout(this.clearCodeBtnTimer);
             this.cleared = true;
             clearTimeout(this.runCodeBtnTimer);
@@ -40,7 +42,8 @@ export default {
     emits: [
         'runCode',
         'clearCode',
-        'reset'
+        'reset',
+        'focus'
     ]
 }
 </script>
@@ -68,11 +71,6 @@ button {
     width: 100px;
     transition: background-color 0.2s linear, border 0.1s linear;
 }
-
-/* button:active {
-    border-color: #222222;
-    border-width: 6px;
-} */
 
 .run {
     /* background-color: #70FA46; old color */
