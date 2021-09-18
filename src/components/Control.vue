@@ -2,7 +2,8 @@
     <div id="buttons">
         <div id="runAndTime">
             <button :class="[running ? 'running' : '', 'run']" @click="runCode" v-text="runBtnMsg"></button>
-            <input type="input" v-model.number="m_runTime" @input="updateRunTime">
+            <input v-show="!running" placeholder="seconds" type="input" v-model.number="m_runTime" @input="updateRunTime">
+            <input v-show="running" type="input" :value="runTimeLeft">
         </div>
         <button :class="[cleared ? 'cleared' : '', 'clear']" @click="clearCode">Clear Code</button>
     </div>
@@ -18,11 +19,13 @@ export default {
             runCodeBtnTimer: null,
             clearCodeBtnTimer: null,
             m_runTime: 0,
-            runBtnMsg: 'Run Code'
+            runBtnMsg: 'Run Code',
+            test: 'hello world'
         };
     },
     props: [
         'runTime',
+        'runTimeLeft'
     ],
     emits: [
         'runCode',
@@ -76,7 +79,7 @@ export default {
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
-    width: calc(50vw + 18px);
+    width: calc(50vw + 28px);
     height: 40px;
     padding: 0;
     margin: 0;
@@ -114,12 +117,11 @@ input {
 
 @keyframes running_flashing {
     0% { background-color: yellowgreen; }
-    16% { background-color: #698C22; }
-    33% { background-color: yellowgreen; }
-    50% { background-color: #698C22; }
-    67% { background-color: yellowgreen; }
-    83% { background-color: #698C22; }
-    100% { background-color: yellowgreen; }
+    20% { background-color: #698C22; }
+    40% { background-color: yellowgreen; }
+    60% { background-color: #698C22; }
+    80% { background-color: yellowgreen; }
+    100% { background-color: #698C22; }
 }
 
 @keyframes border_shrink {
@@ -129,11 +131,16 @@ input {
 
 .running {
     border-color: #222222;
-    animation: running_flashing 3.5s linear 0s 1, border_shrink 0.33s ease-in-out 0s 1;
+    background-color: #698C22;
+    animation: running_flashing 3s linear 0s 1, border_shrink 0.33s ease-in-out 0s 1;
 }
 
 .run:hover {
     background-color: #85B32B;
+}
+
+.run:hover.running {
+    background-color: #698C22;
 }
 
 .clear {

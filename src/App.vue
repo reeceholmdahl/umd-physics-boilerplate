@@ -12,6 +12,7 @@
 
       <Control
         v-model:runTime="runTime"
+        :runTimeLeft="runTimeLeft"
         @runCode="runCode"
         @clearCode="clearCode"
         @reset="reset"
@@ -42,6 +43,7 @@ export default {
       objY: 0,
       stageWidth: 50, // in meters
       runTime: 0,
+      runTimeLeft: 0,
       deltaTime: 1/30,
       interval: null,
       timeout: null,
@@ -79,9 +81,10 @@ export default {
       const functions = userCode();
 
       functions.setup(this.object);
-      this.interval = setInterval(() => {
+      this.interval = setInterval((start) => {
         functions.integrate(this.object, this.deltaTime);
-      }, 1000 * this.deltaTime);
+        this.runTimeLeft = Math.abs(this.runTime - (Date.now() - start) / 1000).toFixed(1);
+      }, 1000 * this.deltaTime, Date.now());
 
       this.timeout = setTimeout(() => {
         clearInterval(this.interval);
@@ -102,12 +105,29 @@ export default {
     },
 
     focusEditor() {
-      document.getElementById('code-editor').children[1].children[0].focus();
+      document.getElementById('code-editor').children[0].children[0].focus();
       // console.log('focusing!')
     }
   },
   mounted() {
     this.runTime = 3.5;
+    this.code =
+    `/** This function is used to set the initial conditions of the object. While I was brainstorming the project I imagined that you might make projects where the coder can't control the position directly, only through change in position. That's how I programmed this. All you have access to are the starting velocities and accelerations. */
+function setup(object) {
+  object.velX = 10;
+  object.velY = 15;
+  object.accX = 0;
+  object.accY = -9.8;
+}
+
+/** Everything in here is run (effectively) continuously. Use some of the examples I provided below to fiddle around with how the object integrates. This is standard semi-implicit Euler integration, commonly used for low-impact physics engines. */
+function integrate(object, deltaTime) {
+  object.addVelX(object.accX * deltaTime);
+  object.addVelY(object.accY * deltaTime);
+  
+  object.addX(object.velX * deltaTime);
+  object.addY(object.velY * deltaTime);
+}`
   }
 }
 </script>

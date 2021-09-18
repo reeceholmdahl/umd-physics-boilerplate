@@ -7,7 +7,6 @@
         :highlight="highlighter"
         language="js"
         emit-events="true"
-        line-numbers
     ></prism-editor>
 
 </template>
@@ -66,7 +65,7 @@ export default {
 /* required class */
   #code-editor {
     width: 50vw;
-    height: 35vh;
+    height: calc(35vh - 10px);
     background: #292A2E;
     color: #ccc;
  
@@ -74,7 +73,7 @@ export default {
     font-family: Fira code, Fira Mono, Consolas, Menlo, Courier, monospace;
     font-size: 14px;
     line-height: 1.5;
-    padding: 5px;
+    padding: 10px;
     border: 4px solid #1d1d1d;
   }
  
