@@ -28,9 +28,12 @@ export default {
         },
 
         clearCode() {
+            this.$emit('reset');
             this.$emit('clearCode');
             clearTimeout(this.clearCodeBtnTimer);
             this.cleared = true;
+            clearTimeout(this.runCodeBtnTimer);
+            this.running = false;
             this.clearCodeBtnTimer = setTimeout(() => { this.cleared = false; }, 900);
         }
     },

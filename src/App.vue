@@ -22,6 +22,7 @@ export default {
       objX: 0,
       objY: 0,
       interval: null,
+      timeout: null,
     }
   },
   components: {
@@ -31,11 +32,38 @@ export default {
   },
   methods: {
     runCode() {
-      eval(this.code);
 
+      clearTimeout(this.timeout);
+      clearInterval(this.interval);
+
+      const userCode = new Function(this.code +
+      `
+      const functions = {};
+      try {
+        functions.integrate = integrate;
+      } catch(e) {
+        functions.integrate = () => {};
+      }
+
+      try {
+        functions.setup = setup;
+      } catch(e) {
+        functions.setup = () => {};
+      }
+
+      return functions;
+      `);
+
+      const functions = userCode();
+
+      functions.setup(this.object);
       this.interval = setInterval(() => {
-        window.integrate(this.object, 1/30);
+        functions.integrate(this.object, 1/30);
       }, 1000 / 30);
+
+      this.timeout = setTimeout(() => {
+        clearInterval(this.interval);
+      }, 3500);
     },
 
     clearCode() {
