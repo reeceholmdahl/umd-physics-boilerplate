@@ -2,7 +2,7 @@
     <prism-editor
         id="code-editor"
         v-model="m_code"
-        @change="onEdit(m_code)"
+        @input="updateCode(m_code)"
         @click="focus"
         :highlight="highlighter"
         language="js"
@@ -36,9 +36,18 @@ export default {
   emits: [
       'update:code'
   ],
+  watch: {
+      'code': function(newCode) {
+          this.m_code = newCode;
+      } 
+  },
   methods: {
-      onEdit(code) {
+      updateCode(code) {
           this.$emit('update:code', code);
+      },
+
+      test(e) {
+          console.log(e);
       },
 
       highlighter(code) {

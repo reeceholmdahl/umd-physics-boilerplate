@@ -1,13 +1,11 @@
 <template>
-  <!-- <div id="space"></div> -->
   <div id="container">
-    <Content />
+    <Content v-model:object="object" v-model:objX="objX" v-model:objY="objY" />
     <div id="code-section">
-      <Buttons @runCode="runCode" @clearCode="clearCode" />
+      <Buttons @runCode="runCode" @clearCode="clearCode" @reset="reset" />
       <Code v-model:code="code" />
     </div>
   </div>
-  <!-- <div id="space"></div> -->
 </template>
 
 <script>
@@ -20,7 +18,10 @@ export default {
   data() {
     return {
       code: '',
-      object: null,
+      object: {},
+      objX: 0,
+      objY: 0,
+      interval: null,
     }
   },
   components: {
@@ -30,11 +31,24 @@ export default {
   },
   methods: {
     runCode() {
-      console.log('run code!');
+      eval(this.code);
+
+      this.interval = setInterval(() => {
+        window.integrate(this.object, 1/30);
+      }, 1000 / 30);
     },
+
     clearCode() {
-      console.log('clear code!');
+      // console.log('clear code!');
+      clearInterval(this.interval);
+      this.code = '';
     },
+
+    reset() {
+      this.object.reset();
+      this.objX = 0;
+      this.objY = 0;
+    }
   }
 }
 </script>

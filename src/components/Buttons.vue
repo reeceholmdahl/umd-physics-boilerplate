@@ -19,6 +19,7 @@ export default {
     methods: {
         runCode() {
             if (!this.running) {
+                this.$emit('reset');
                 this.$emit('runCode');
                 clearTimeout(this.runCodeBtnTimer);
                 this.running = true;
@@ -35,7 +36,8 @@ export default {
     },
     emits: [
         'runCode',
-        'clearCode'
+        'clearCode',
+        'reset'
     ]
 }
 </script>
