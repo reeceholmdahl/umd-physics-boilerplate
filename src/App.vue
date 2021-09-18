@@ -11,6 +11,7 @@
     <div id="code-section">
 
       <Control
+        v-model:runTime="runTime"
         @runCode="runCode"
         @clearCode="clearCode"
         @reset="reset"
@@ -40,6 +41,8 @@ export default {
       objX: 0,
       objY: 0,
       stageWidth: 50, // in meters
+      runTime: 0,
+      deltaTime: 1/30,
       interval: null,
       timeout: null,
     }
@@ -77,12 +80,12 @@ export default {
 
       functions.setup(this.object);
       this.interval = setInterval(() => {
-        functions.integrate(this.object, 1/30);
-      }, 1000 / 30);
+        functions.integrate(this.object, this.deltaTime);
+      }, 1000 * this.deltaTime);
 
       this.timeout = setTimeout(() => {
         clearInterval(this.interval);
-      }, 3500);
+      }, this.runTime * 1000);
     },
 
     clearCode() {
@@ -102,6 +105,9 @@ export default {
       document.getElementById('code-editor').children[1].children[0].focus();
       // console.log('focusing!')
     }
+  },
+  mounted() {
+    this.runTime = 3.5;
   }
 }
 </script>

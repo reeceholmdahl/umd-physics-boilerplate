@@ -1,20 +1,40 @@
 <template>
     <div id="buttons">
-        <button :class="[running ? 'running' : '', 'run']" @click="runCode">Run Code</button>
+        <div id="runAndTime">
+            <button :class="[running ? 'running' : '', 'run']" @click="runCode" v-text="runBtnMsg"></button>
+            <input type="input" v-model.number="m_runTime" @input="updateRunTime">
+        </div>
         <button :class="[cleared ? 'cleared' : '', 'clear']" @click="clearCode">Clear Code</button>
     </div>
 </template>
 
 <script>
 export default {
-    name: 'Buttons',
+    name: 'Control',
     data() {
         return {
             running: false,
             cleared: false,
             runCodeBtnTimer: null,
-            clearCodeBtnTimer: null
+            clearCodeBtnTimer: null,
+            m_runTime: 0,
+            runBtnMsg: 'Run Code'
         };
+    },
+    props: [
+        'runTime',
+    ],
+    emits: [
+        'runCode',
+        'clearCode',
+        'reset',
+        'focus',
+        'update:runTime'
+    ],
+    watch: {
+        'runTime': function(newRunTime) {
+            this.m_runTime = newRunTime;
+        }
     },
     methods: {
         runCode() {
@@ -24,7 +44,11 @@ export default {
                 this.$emit('focus');
                 clearTimeout(this.runCodeBtnTimer);
                 this.running = true;
-                this.runCodeBtnTimer = setTimeout(() => { this.running = false; }, 3600);
+                this.runBtnMsg = 'Running';
+                this.runCodeBtnTimer = setTimeout(() => {
+                    this.running = false;
+                    this.runBtnMsg = 'Run Code';
+                }, this.runTime * 1000 + 100);
             }
         },
 
@@ -37,14 +61,12 @@ export default {
             clearTimeout(this.runCodeBtnTimer);
             this.running = false;
             this.clearCodeBtnTimer = setTimeout(() => { this.cleared = false; }, 900);
+        },
+
+        updateRunTime() {
+            this.$emit('update:runTime', this.m_runTime);
         }
-    },
-    emits: [
-        'runCode',
-        'clearCode',
-        'reset',
-        'focus'
-    ]
+    }
 }
 </script>
 
@@ -53,7 +75,7 @@ export default {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
-    align-items: flex-end;
+    align-items: center;
     width: calc(50vw + 18px);
     height: 40px;
     padding: 0;
@@ -62,14 +84,27 @@ export default {
     margin-bottom: 2px;
 }
 
-button {
+button, input {
+    font-family: Fira code, Fira Mono, Consolas, Menlo, Courier, monospace;
+    font-size: 13px;
+    line-height: 1.5;
     outline: unset;
     border: 4px solid #1d1d1d;
     padding: 1.5px;
     margin: 0;
     height: 40px;
     width: 100px;
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
     transition: background-color 0.2s linear, border 0.1s linear;
+}
+
+input {
+    margin-left: 10px;
+    background-color: #ddd; /* different color than this */
+    padding-left: 10px;
+    padding-right: 5px;
 }
 
 .run {
