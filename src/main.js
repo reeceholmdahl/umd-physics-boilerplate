@@ -2,41 +2,64 @@ import { createApp } from 'vue';
 import App from './App.vue';
 import p5 from 'p5';
 
+let objX = 20;
+let objY = 20;
+
 createApp(App)
     .mount('#app');
 
-const State = {
-    player: null,
+function resizeCanvas(s) {
+    const width = document.getElementById('p5content').offsetWidth - 8;
+    const height = document.getElementById('p5content').offsetHeight - 8;
+    s.resizeCanvas(width, height)
 }
-export default State;
 
 /**
- * 
  * @param {p5.p5InstanceExtensions} s 
  */
 const sketch = (s) => {
 
     s.setup = function() {
-        const { width, height } = App.data();
         
-        s.createCanvas(width, height);
+        s.createCanvas();
 
-        State.player = {
-            x: 100,
-            y: 100,
-            size: 50,
-        }
+        resizeCanvas(s);
+
+        App.data().object = function() {
+            this.velX = 0;
+            this.velY = 0;
+            this.accX = 0;
+            this.accY = 0;
+            this.addX = function(dx) {
+                objX += dx;
+            };
+            this.addY = function(dy) {
+                objY += dy;
+            };
+            this.addVelX = function(dvx) {
+                this.velX += dvx;
+            };
+            this.addVelY = function(dvy) {
+                this.velY += dvy;
+            };
+        };
     }
 
     s.draw = function() {
 
         s.clear();
-        s.background(102, 0, 204);
+        s.background('#08B2CC');
 
-        window.player = State.player;
+        // const obj = App.data().object;
 
-        s.circle(State.player.x, State.player.y, State.player.size);
-        s.fill(204, 102, 0);
+        s.circle(objX, objY, 20);
+        s.strokeWeight(2);
+        s.fill('#3612CC');
+        s.stroke('#1d1d1d')
+    }
+
+    s.windowResized = function() {
+        resizeCanvas(s);
     }
 }
 

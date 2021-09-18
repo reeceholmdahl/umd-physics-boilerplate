@@ -1,11 +1,12 @@
 <template>
-    <button id="runCode" @click="runCode">Run</button>
     <prism-editor
         id="code-editor"
         v-model="m_code"
-        @input="onEdit(m_code)"
+        @change="onEdit(m_code)"
         @click="focus"
         :highlight="highlighter"
+        language="js"
+        emit-events="true"
         line-numbers
     ></prism-editor>
 
@@ -47,15 +48,6 @@ export default {
       focus() {
           document.getElementById('code-editor').children[1].children[0].focus();
       },
-
-      runCode() {
-          try {
-              eval(this.code);
-              window.test = () => { eval(this.code) };
-          } catch(e) {
-              console.log(e);
-          }
-      }
   }
 }
 </script>
@@ -63,9 +55,9 @@ export default {
 <style>
 /* required class */
   #code-editor {
-    width: 480px;
-    height: 240px;
-    background: #2d2d2d;
+    width: 50vw;
+    height: 35vh;
+    background: #292A2E;
     color: #ccc;
  
     /* you must provide font-family font-size line-height. Example: */
@@ -73,6 +65,7 @@ export default {
     font-size: 14px;
     line-height: 1.5;
     padding: 5px;
+    border: 4px solid #1d1d1d;
   }
  
   /* optional class for removing the outline */

@@ -1,5 +1,5 @@
 <template>
-  <div id="content">
+  <div id="p5content">
     <main id="p5"></main>
   </div>
 </template>
@@ -11,8 +11,11 @@ export default {
 </script>
 
 <style scoped>
-#p5 {
-  width: 360px;
-  height: 360px;
+
+#p5content {
+  width: calc((50vh - 10px) * 16 / 9);
+  height: calc(50vh - 10px);
+  /* background-color: #08B2CC; */
+  border: 4px solid #1d1d1d
 }
 </style>
